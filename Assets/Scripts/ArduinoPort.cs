@@ -104,7 +104,7 @@ public class ArduinoPort : MonoBehaviour
             SerialPort.Open();
             Debug.Log("成功開啟接口");
 
-            OnOpenPort.Invoke();
+            OnOpenPort!.Invoke();
         }
         catch (Exception ex)
         {
@@ -112,7 +112,7 @@ public class ArduinoPort : MonoBehaviour
 
             Debug.LogError(Str);
 
-            OnError.Invoke(Str);
+            OnError!.Invoke(Str);
         }
     }
 
@@ -132,7 +132,7 @@ public class ArduinoPort : MonoBehaviour
                 SerialPort.Close();
                 Debug.Log("成功關閉接口");
 
-                OnClosePort.Invoke();
+                OnClosePort!.Invoke();
             }
             catch (Exception ex)
             {
@@ -140,7 +140,7 @@ public class ArduinoPort : MonoBehaviour
 
                 Debug.LogError(Str);
 
-                OnError.Invoke(Str);
+                OnError!.Invoke(Str);
             }
         }
     }
@@ -172,7 +172,7 @@ public class ArduinoPort : MonoBehaviour
 
                 Debug.LogError(Str);
 
-                OnError.Invoke(Str);
+                OnError!.Invoke(Str);
 
                 ClosePort();
             }
