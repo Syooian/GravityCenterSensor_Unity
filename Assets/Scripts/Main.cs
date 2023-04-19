@@ -23,11 +23,24 @@ public class Main : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Arduino.IsPortOpen)
+        {
+            int P = 0 - Buttons[0].PositionValue + Buttons[1].PositionValue;
 
+            GravityCenter.rectTransform.anchoredPosition = new Vector2(Mathf.Clamp(P * Sensitive, -MaxP, MaxP), 0);
+        }
     }
 
-    [SerializeField]
-    float[] Value;
+    /// <summary>
+    /// 移動最大值
+    /// </summary>
+    [SerializeField, Header("移動最大值"), Min(0)]
+    int MaxP;
+    /// <summary>
+    /// 敏感度
+    /// </summary>
+    [SerializeField, Header("敏感度")]
+    float Sensitive = 1;
 
     /// <summary>
     /// 
@@ -42,9 +55,9 @@ public class Main : MonoBehaviour
                 var Data = Msg.Split(":")[1].Split("|");
 
                 int ID = int.Parse(Data[0]);
-
-                //Value[int.Parse(Data[0])] = int.Parse(Data[1]);
-                Value[ID] = Buttons[ID].GetMValue(int.Parse(Data[1]));
+                Buttons[ID].ButtonValue = int.Parse(Data[1]);
+                Buttons[ID].PositionValue = (int)Mathf.Lerp(0, MaxP, Buttons[ID].GetMValue(Buttons[ID].ButtonValue));
+                Buttons[ID].PositionValueText.text = Buttons[ID].PositionValue.ToString();
             }
             catch (System.Exception ex)
             {
@@ -53,8 +66,11 @@ public class Main : MonoBehaviour
         }
     }
 
-    [SerializeField]
-    Image Img;
+    /// <summary>
+    /// 重心點
+    /// </summary>
+    [SerializeField, Header("重心點")]
+    Image GravityCenter;
 }
 
 /// <summary>
@@ -84,4 +100,20 @@ struct ButtonStruct
     {
         return Mathf.InverseLerp(Max, Min, V);
     }
+
+    /// <summary>
+    /// 接收到的按鈕值
+    /// </summary>
+    [SerializeField, Header("接收到的按鈕值")]
+    public int ButtonValue;
+    /// <summary>
+    /// 轉換成位置的值
+    /// </summary>
+    [SerializeField, Header("轉換成位置的值")]
+    public int PositionValue;
+    /// <summary>
+    /// 
+    /// </summary>
+    [SerializeField]
+    public TMPro.TextMeshProUGUI PositionValueText;
 }
